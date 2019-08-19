@@ -1,0 +1,8 @@
+{
+  "params": {
+    "database": "postgres",
+    "name": "juvenal"
+  },
+  "type": "python-service",
+  "version": "2019.31.2"
+}
