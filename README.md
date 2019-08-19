@@ -1,6 +1,19 @@
 # charmander
 
-Short Project Description
+Sample project to showcase building services with our microcosm libraries.
+
+
+## Goal
+
+This is a special service designed to show how the various pieces of the
+microcosm ecosystem work together in a sample service. This service uses the
+same building blocks of our architecture and services as a concrete example of
+how our `microcosm-` libraries work together. These include:
+
+- Routes and resources with `microcosm-flask`
+- Stores and models with `microcosm-postgres`
+- Connecting the two through `microcosm-pubsub` and SQS/SNS
+
 
 
 ## Developing
@@ -46,3 +59,4 @@ The service publishes several endpoints by default.
     using [HAL JSON](http://stateless.co/hal_specification.html):
 
         GET /api/v1/swagger
+

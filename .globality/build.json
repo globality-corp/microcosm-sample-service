@@ -1,8 +1,8 @@
 {
   "params": {
     "database": "postgres",
-    "name": "juvenal"
+    "name": "charmander"
   },
-  "type": "python-service",
+  "type": "python-library",
   "version": "2019.31.2"
 }
