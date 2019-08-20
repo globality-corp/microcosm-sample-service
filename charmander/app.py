@@ -8,9 +8,9 @@ from microcosm.loaders.compose import load_config_and_secrets
 from microcosm_secretsmanager.loaders.conventions import load_from_secretsmanager
 
 import charmander.postgres  # noqa
-import charmander.routes.example.controller  # noqa
-import charmander.routes.example.crud   # noqa
-import charmander.stores.example_store  # noqa
+import charmander.routes.pizza.controller  # noqa
+import charmander.routes.pizza.crud   # noqa
+import charmander.stores.pizza_store  # noqa
 from charmander.config import load_default_config
 
 
@@ -37,7 +37,7 @@ def create_app(debug=False, testing=False, model_only=False):
     )
 
     graph.use(
-        "example_store",
+        "pizza_store",
         "logging",
         "postgres",
         "sessionmaker",
@@ -56,7 +56,7 @@ def create_app(debug=False, testing=False, model_only=False):
             "postgres_health_check",
             "swagger_convention",
             # routes
-            "example_routes",
+            "pizza_routes",
         )
 
     return graph.lock()
