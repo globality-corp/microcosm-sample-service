@@ -1,0 +1,23 @@
+# Overall design
+
+Usually our services do not have extensive documentation embedded in the
+project. Given that this is a tutorial project however, it will be helpful to
+summarize what it does.
+
+# charmander: an intro into building services with microcosm
+
+In the `microcosm-sample-service` repo we will build a service named
+`charmander` which models a rather complex pizza factory. Through the git
+history in this project we will go through a sample of steps to build a fully
+fledged factory.
+
+These steps include:
+
+1. Initializing this project from scratch from a cookiecutter repository which
+is also opensourced.
+2. Adding some basic resources for `pizza`, `toppings` and `orders`.
+3. Adding non-trivial logic for creating these objects in response to events
+outside of `charmander` through a `daemon`.
+4. Refactoring some of this daemon logic into factory functions which can do
+this setup for us automatically to improve performance and make the code easier
+to read through.
