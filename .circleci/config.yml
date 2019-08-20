@@ -67,7 +67,7 @@ jobs:
           command: |
             eval $(aws ecr get-login --no-include-email)
             globality-build build-gen local
-            globality-build docker --repo juvenal
+            globality-build docker --repo python-library
 
   test:
     <<: *defaults
@@ -81,15 +81,15 @@ jobs:
           name: pull and run database - postgres
           command: |
             docker pull postgres
-            docker run -d --name juvenal_db -e POSTGRES_DB=juvenal_test_db -e POSTGRES_USER=juvenal postgres
+            docker run -d --name charmander_db -e POSTGRES_DB=charmander_test_db -e POSTGRES_USER=charmander postgres
       - run:
           name: Test code
           command: |
-            docker create -v /src/juvenal/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/juvenal/tests service_tests:/src/juvenal/
+            docker create -v /src/charmander/tests/ --name service_tests alpine:3.4 /bin/true
+            docker cp $(pwd)/charmander/tests service_tests:/src/charmander/
             eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/juvenal:${CIRCLE_SHA1}
-            docker run -it  --link juvenal_db:postgres -e JUVENAL__POSTGRES__HOST=postgres --volumes-from service_tests ${AWS_ECR_DOMAIN}/juvenal:${CIRCLE_SHA1} test
+            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
+            docker run -it  --link charmander_db:postgres -e CHARMANDER__POSTGRES__HOST=postgres --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} test
   lint:
     <<: *defaults
 
@@ -102,11 +102,11 @@ jobs:
       - run:
           name: Run Lint
           command: |
-            docker create -v /src/juvenal/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/juvenal/tests service_tests:/src/juvenal/
+            docker create -v /src/charmander/tests/ --name service_tests alpine:3.4 /bin/true
+            docker cp $(pwd)/charmander/tests service_tests:/src/charmander/
             eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/juvenal:${CIRCLE_SHA1}
-            docker run -it --volumes-from service_tests ${AWS_ECR_DOMAIN}/juvenal:${CIRCLE_SHA1} lint
+            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
+            docker run -it --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} lint
 
   typehinting:
     <<: *defaults
@@ -120,98 +120,20 @@ jobs:
       - run:
           name: Run Typehinting
           command: |
-            docker create -v /src/juvenal/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/juvenal/tests service_tests:/src/juvenal/
+            docker create -v /src/charmander/tests/ --name service_tests alpine:3.4 /bin/true
+            docker cp $(pwd)/charmander/tests service_tests:/src/charmander/
             eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/juvenal:${CIRCLE_SHA1}
-            docker run -it --volumes-from service_tests ${AWS_ECR_DOMAIN}/juvenal:${CIRCLE_SHA1} typehinting
-  deploy_dev:
-    <<: *deploy_defaults
+            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
+            docker run -it --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} typehinting
+  deploy_pypi:
+    <<: *defaults
     steps:
       - attach_workspace:
           at: ~/repo
-      - setup_remote_docker
       - run:
-          name: Deploy dev
+          name: Deploy
           command: |
-            export CLUSTER="service-dev"
-            export ENVIRONMENT=dev
-            export NAME=juvenal
-            globality-build docker-tag \
-                --service juvenal \
-                --sha ${CIRCLE_SHA1} \
-                --tag develop
-            globality-build deploy --service $NAME --environment $ENVIRONMENT --sha ${CIRCLE_SHA1} --cluster $CLUSTER
-
-  backup_ecr_dev:
-    <<: *deploy_defaults
-    steps:
-      - setup_remote_docker
-      - run:
-          name: Backup ECR dev
-          command: |
-            globality-build docker-duplicate \
-                --service juvenal \
-                --tag develop \
-                --no-dry-run
-  deploy_test:
-    <<: *deploy_defaults
-    steps:
-      - attach_workspace:
-          at: ~/repo
-      - setup_remote_docker
-      - run:
-          name: Deploy test
-          command: |
-            export CLUSTER="service-test"
-            export ENVIRONMENT=test
-            export NAME=juvenal
-            globality-build docker-tag \
-                --service juvenal \
-                --sha ${CIRCLE_SHA1} \
-                --tag ${CIRCLE_BRANCH//\//-}
-            globality-build deploy --service $NAME --environment $ENVIRONMENT --sha ${CIRCLE_SHA1} --cluster $CLUSTER
-
-  backup_ecr_test:
-    <<: *deploy_defaults
-    steps:
-      - setup_remote_docker
-      - run:
-          name: Backup ECR test
-          command: |
-            globality-build docker-duplicate \
-                --service juvenal \
-                --tag ${CIRCLE_BRANCH//\//-} \
-                --no-dry-run
-  deploy_demo:
-    <<: *deploy_defaults
-    steps:
-      - attach_workspace:
-          at: ~/repo
-      - setup_remote_docker
-      - run:
-          name: Deploy demo
-          command: |
-            export CLUSTER="service-demo"
-            export ENVIRONMENT=demo
-            export NAME=juvenal
-            globality-build docker-tag \
-                --service juvenal \
-                --sha ${CIRCLE_SHA1} \
-                --tag ${CIRCLE_TAG}
-            globality-build deploy --service $NAME --environment $ENVIRONMENT --sha ${CIRCLE_SHA1} --cluster $CLUSTER
-
-  backup_ecr_demo:
-    <<: *deploy_defaults
-    steps:
-      - setup_remote_docker
-      - run:
-          name: Backup ECR demo
-          command: |
-            globality-build docker-duplicate \
-                --service juvenal \
-                --tag ${CIRCLE_TAG} \
-                --no-dry-run
+            echo "Not publishing package!"
 
 workflows:
   version: 2
@@ -230,14 +152,14 @@ workflows:
             # run for all branches and tags
             tags:
               only: /.*/
-      - test:
+      - lint:
           requires:
             - build_base_docker
           filters:
             # run for all branches and tags
             tags:
               only: /.*/
-      - lint:
+      - test:
           requires:
             - build_base_docker
           filters:
@@ -251,44 +173,7 @@ workflows:
             # run for all branches and tags
             tags:
               only: /.*/
-
-      - deploy_dev:
-          requires:
-            - test
-            - lint
-            - typehinting
-          filters:
-            branches:
-              only: develop
-
-
-      - backup_ecr_dev:
-          requires:
-            - deploy_dev
-          filters:
-            branches:
-              only: develop
-
-
-      - deploy_test:
-          requires:
-            - test
-            - lint
-            - typehinting
-          filters:
-            branches:
-              only: /release\/2[0-9]{3}\.[0-5]?[0-9]\.[0-9]{1,3}$/
-
-
-      - backup_ecr_test:
-          requires:
-            - deploy_test
-          filters:
-            branches:
-              only: /release\/2[0-9]{3}\.[0-5]?[0-9]\.[0-9]{1,3}$/
-
-
-      - deploy_demo:
+      - deploy_pypi:
           requires:
             - test
             - lint
@@ -297,17 +182,6 @@ workflows:
             branches:
               ignore: /.*/
             tags:
-              only: /2[0-9]{3}\.[0-5]?[0-9]\.[0-9]{1,3}$/
-
-
-      - backup_ecr_demo:
-          requires:
-            - deploy_demo
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /2[0-9]{3}\.[0-5]?[0-9]\.[0-9]{1,3}$/
-
+              only: /^[0-9]+(\.[0-9]+)*/
 
 
