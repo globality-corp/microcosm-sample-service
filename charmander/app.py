@@ -9,7 +9,7 @@ from microcosm_secretsmanager.loaders.conventions import load_from_secretsmanage
 
 import charmander.postgres  # noqa
 import charmander.routes.pizza.controller  # noqa
-import charmander.routes.pizza.crud   # noqa
+import charmander.routes.pizza.crud  # noqa
 import charmander.stores.pizza_store  # noqa
 from charmander.config import load_default_config
 

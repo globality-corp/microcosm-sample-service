@@ -8,11 +8,7 @@ from microcosm_flask.conventions.crud import configure_crud
 from microcosm_flask.operations import Operation
 from microcosm_postgres.context import transactional
 
-from charmander.resources.pizza_resources import (
-    PizzaSchema,
-    NewPizzaSchema,
-    SearchPizzaSchema,
-)
+from charmander.resources.pizza_resources import NewPizzaSchema, PizzaSchema, SearchPizzaSchema
 
 
 @binding("pizza_routes")

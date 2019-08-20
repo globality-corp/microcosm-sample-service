@@ -9,11 +9,7 @@ from microcosm_flask.namespaces import Namespace
 from microcosm_flask.operations import Operation
 from microcosm_flask.paging import PageSchema
 
-from charmander.models.pizza_model import (
-    CrustType,
-    Pizza,
-    PizzaSize,
-)
+from charmander.models.pizza_model import CrustType, Pizza, PizzaSize
 
 
 class NewPizzaSchema(Schema):
@@ -47,4 +43,4 @@ class PizzaSchema(NewPizzaSchema):
 class SearchPizzaSchema(PageSchema):
     customer_id = fields.UUID()
     crust_type = EnumField(CrustType)
-    size  = EnumField(PizzaSize)
+    size = EnumField(PizzaSize)

@@ -1,9 +1,9 @@
 from collections import namedtuple
-from enum import unique, Enum
+from enum import Enum, unique
 
 from microcosm_postgres.models import EntityMixin, Model
 from microcosm_postgres.types import EnumType
-from sqlalchemy import Column, String
+from sqlalchemy import Column
 from sqlalchemy_utils import UUIDType
 
 
@@ -47,7 +47,7 @@ class CrustType(Enum):
 class Pizza(EntityMixin, Model):
     """
     A  pizza
- 
+
     """
     __tablename__ = "pizza"
 
