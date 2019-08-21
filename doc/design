@@ -21,3 +21,11 @@ outside of `charmander` through a `daemon`.
 4. Refactoring some of this daemon logic into factory functions which can do
 this setup for us automatically to improve performance and make the code easier
 to read through.
+
+# Initializing the repo from the cookiecutter
+
+# Adding resources
+
+# Async work
+
+# Moving complex creation logic to a factory, simplifying the daemon
