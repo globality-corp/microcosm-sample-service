@@ -1,23 +1,24 @@
 """
-Example resources.
+Pizza resources.
 
 """
 from marshmallow import Schema, fields
+from microcosm_flask.fields import EnumField
 from microcosm_flask.linking import Link, Links
 from microcosm_flask.namespaces import Namespace
 from microcosm_flask.operations import Operation
 from microcosm_flask.paging import PageSchema
 
-from charmander.models.example_model import Example
+from charmander.models.pizza_model import CrustType, Pizza, PizzaSize
 
 
-class NewExampleSchema(Schema):
-    name = fields.String(
-        required=True,
-    )
+class NewPizzaSchema(Schema):
+    customerId = fields.UUID(required=True, attribute="customer_id")
+    size = EnumField(PizzaSize)
+    crustType = EnumField(CrustType, attribute="crust_type")
 
 
-class ExampleSchema(NewExampleSchema):
+class PizzaSchema(NewPizzaSchema):
     id = fields.UUID(
         required=True,
     )
@@ -31,13 +32,15 @@ class ExampleSchema(NewExampleSchema):
         links["self"] = Link.for_(
             Operation.Retrieve,
             Namespace(
-                subject=Example,
+                subject=Pizza,
                 version="v1",
             ),
-            example_id=obj.id,
+            pizza_id=obj.id,
         )
         return links.to_dict()
 
 
-class SearchExampleSchema(PageSchema):
-    name = fields.String()
+class SearchPizzaSchema(PageSchema):
+    customer_id = fields.UUID()
+    crust_type = EnumField(CrustType)
+    size = EnumField(PizzaSize)

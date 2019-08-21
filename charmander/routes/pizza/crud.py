@@ -1,5 +1,5 @@
 """
-Example CRUD routes.
+Pizza CRUD routes.
 
 """
 from microcosm.api import binding
@@ -8,38 +8,34 @@ from microcosm_flask.conventions.crud import configure_crud
 from microcosm_flask.operations import Operation
 from microcosm_postgres.context import transactional
 
-from charmander.resources.example_resources import (
-    ExampleSchema,
-    NewExampleSchema,
-    SearchExampleSchema,
-)
+from charmander.resources.pizza_resources import NewPizzaSchema, PizzaSchema, SearchPizzaSchema
 
 
-@binding("example_routes")
-def configure_example_routes(graph):
-    controller = graph.example_controller
+@binding("pizza_routes")
+def configure_pizza_routes(graph):
+    controller = graph.pizza_controller
     mappings = {
         Operation.Create: EndpointDefinition(
             func=transactional(controller.create),
-            request_schema=NewExampleSchema(),
-            response_schema=ExampleSchema(),
+            request_schema=NewPizzaSchema(),
+            response_schema=PizzaSchema(),
         ),
         Operation.Delete: EndpointDefinition(
             func=transactional(controller.delete),
         ),
         Operation.Replace: EndpointDefinition(
             func=transactional(controller.replace),
-            request_schema=NewExampleSchema(),
-            response_schema=ExampleSchema(),
+            request_schema=NewPizzaSchema(),
+            response_schema=PizzaSchema(),
         ),
         Operation.Retrieve: EndpointDefinition(
             func=controller.retrieve,
-            response_schema=ExampleSchema(),
+            response_schema=PizzaSchema(),
         ),
         Operation.Search: EndpointDefinition(
             func=controller.search,
-            request_schema=SearchExampleSchema(),
-            response_schema=ExampleSchema(),
+            request_schema=SearchPizzaSchema(),
+            response_schema=PizzaSchema(),
         ),
     }
     configure_crud(graph, controller.ns, mappings)
