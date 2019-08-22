@@ -17,6 +17,8 @@ from sqlalchemy_utils import UUIDType
 
 from charmander.models.order_event_type import OrderEventType
 from charmander.models.order_model import Order
+from charmander.models.pizza_model import PizzaSize, CrustType
+from charmander.models.topping_model import ToppingType
 
 
 @add_metaclass(EventMeta)
@@ -31,6 +33,21 @@ class OrderEvent(UnixTimestampEntityMixin):
     __unique_parent__ = False
 
     customer_id = Column(UUIDType, nullable=False)
+    pizza_size = Column(EnumType(PizzaSize), nullable=True)
+    crust_type = Column(EnumType(PizzaSize), nullable=True)
+    topping_type = Column(EnumType(ToppingType), nullable=True)
+    # denormalize from parent order to make searching easier
+    purpose = Column(
+            EnumType(Purpose),
+            default=Purpose.NORMAL,
+            nullable=False
+    )
+    resolution = Column(
+        EnumType(Resolution),
+        default=Resolution.ACTIVE,
+        nullable=False,
+    )
+
 
     __mapper_args__ = dict(
         polymorphic_on="event_type",

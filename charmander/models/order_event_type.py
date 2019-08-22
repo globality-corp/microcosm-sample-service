@@ -16,6 +16,7 @@ class OrderEventType(EventType):
     # NB: Our state machines always start with an initial event
     OrderInitialized = event_info(
         follows=nothing(),
+        requires=["ciustomer_id"],
     )
 
     PizzaCreated = event_info(
@@ -23,6 +24,10 @@ class OrderEventType(EventType):
             "OrderInitialized",
             "PizzaCustomizationFinished",
         ),
+        requires=[
+            "pizza_size",
+            "crust_type",
+        ],
     )
     
     PizzaToppingAdded = event_info(
@@ -30,6 +35,9 @@ class OrderEventType(EventType):
             "PizzaCreated",
             "PizzaToppingAdded",
         ),
+        requires=[
+            "topping_type",
+        ],
     )
     
     PizzaCustomizationFinished = event_info(
