@@ -12,7 +12,15 @@ from charmander.models.order_model import Order
 class OrderStore(Store):
 
     def __init__(self, graph):
-        super().__init__(self, Order)
+        super().__init__(
+            graph,
+            Order,
+            auto_filter_fields=(
+                Order.customer_id,
+                Order.purpose,
+                Order.resolution,
+            ),
+        )
 
     def _filter(
         self,
