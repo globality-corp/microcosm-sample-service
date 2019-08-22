@@ -12,23 +12,11 @@ from charmander.models.topping_model import Topping
 class ToppingStore(Store):
 
     def __init__(self, graph):
-        super().__init__(self, Topping)
-
-    def _filter(
-        self,
-        query,
-        pizza_id=None,
-        topping_type=None,
-        **kwargs,
-    ):
-        if pizza_id is not None:
-            query = query.filter(
-                Topping.pizza_id == pizza_id,
-            )
-
-        if topping_type is not None:
-            query = query.filter(
-                Topping.topping_type == topping_type,
-            )
-
-        return super()._filter(query, **kwargs)
+        super().__init__(
+            graph,
+            Topping,
+            auto_filter_fields=(
+                Topping.pizza_id,
+                Topping.topping_type,
+            ),
+        )
