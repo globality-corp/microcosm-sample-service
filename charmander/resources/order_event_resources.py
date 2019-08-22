@@ -21,6 +21,7 @@ class SearchOrderEventSchema(SearchEventSchema):
     event_type = EnumField(
         ProposalEventType,
     )
+    order_id = fields.UUID()
     customer_id = fields.UUID()
     pizza_size = EnumField(
         PizzaSize,
