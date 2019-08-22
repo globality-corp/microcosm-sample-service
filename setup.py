@@ -17,6 +17,7 @@ setup(
     zip_safe=False,
     install_requires=[
         "microcosm>=2.12.0",
+        "microcosm-eventsource>=1.0.0",
         "microcosm-flask[metrics,spooky]>=1.20.0",
         "microcosm-logging>=1.3.0",
         "microcosm-postgres>=1.9.1",

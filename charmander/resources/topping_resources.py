@@ -9,15 +9,16 @@ from microcosm_flask.namespaces import Namespace
 from microcosm_flask.operations import Operation
 from microcosm_flask.paging import PageSchema
 
-from charmander.models.topping_model import ToppingType
+from charmander.models.pizza_model import Pizza
+from charmander.models.topping_model import Topping, ToppingType
 
 
 class NewToppingSchema(Schema):
     pizzaId = fields.UUID(required=True, attribute="pizza_id")
-    toppingType = EnumField(CrustType, attribute="topping_type")
+    toppingType = EnumField(ToppingType, attribute="topping_type")
 
 
-class ToppingSchema(NewPizzaSchema):
+class ToppingSchema(NewToppingSchema):
     id = fields.UUID(
         required=True,
     )

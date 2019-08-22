@@ -14,12 +14,12 @@ from charmander.models.order_event_model import OrderEvent
 from charmander.models.order_event_type import OrderEventType
 from charmander.models.order_model import Order
 from charmander.models.pizza_model import CrustType, PizzaSize
-from charmander.models.topping_model import ToppingType 
+from charmander.models.topping_model import ToppingType
 
 
 class SearchOrderEventSchema(SearchEventSchema):
     event_type = EnumField(
-        ProposalEventType,
+        OrderEventType,
     )
     order_id = fields.UUID()
     customer_id = fields.UUID()
@@ -50,17 +50,20 @@ class NewOrderEventSchema(Schema):
         attribute="customer_id",
     )
     pizzaSize = EnumField(
+        PizzaSize,
         attribute="pizza_size",
     )
     crustType = EnumField(
+        CrustType,
         attribute="crust_type",
     )
     toppingType = EnumField(
+        ToppingType,
         attribute="topping_type",
     )
 
 
-class OrderEventSchema(NewProposalEventSchema, EventSchema):
+class OrderEventSchema(NewOrderEventSchema, EventSchema):
     id = fields.UUID(
         required=True,
     )

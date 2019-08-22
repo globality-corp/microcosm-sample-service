@@ -2,12 +2,12 @@
 Order model.
 
 """
-from marquez.enums import Purpose, Resolution
-from marquez.enums.workspace import WorkspaceType
 from microcosm_postgres.models import Model, UnixTimestampEntityMixin
 from microcosm_postgres.types import EnumType
-from sqlalchemy import Column, Index
+from sqlalchemy import Column
 from sqlalchemy_utils import UUIDType
+
+from charmander.enums import Purpose, Resolution
 
 
 class Order(UnixTimestampEntityMixin, Model):
