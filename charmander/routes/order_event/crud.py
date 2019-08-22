@@ -8,7 +8,11 @@ from microcosm_flask.conventions.crud import configure_crud
 from microcosm_flask.operations import Operation
 from microcosm_postgres.context import transactional
 
-from charmander.resources.order_event_resources import NewOrderEventSchema, OrderEventSchema, SearchOrderEventSchema
+from charmander.resources.order_event_resources import (
+    NewOrderEventSchema,
+    OrderEventSchema,
+    SearchOrderEventSchema,
+)
 
 
 @binding("order_event_routes")

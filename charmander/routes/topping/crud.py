@@ -8,7 +8,11 @@ from microcosm_flask.conventions.crud import configure_crud
 from microcosm_flask.operations import Operation
 from microcosm_postgres.context import transactional
 
-from charmander.resources.topping_resources import NewToppingSchema, SearchToppingSchema, ToppingSchema
+from charmander.resources.topping_resources import (
+    NewToppingSchema,
+    SearchToppingSchema,
+    ToppingSchema,
+)
 
 
 @binding("topping_routes")
