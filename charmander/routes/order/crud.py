@@ -8,11 +8,7 @@ from microcosm_flask.conventions.crud import configure_crud
 from microcosm_flask.operations import Operation
 from microcosm_postgres.context import transactional
 
-from charmander.resources.order_resources import (
-    NewOrderSchema,
-    OrderSchema,
-    SearchOrderSchema,
-)
+from charmander.resources.order_resources import NewOrderSchema, OrderSchema, SearchOrderSchema
 
 
 @binding("order_routes")

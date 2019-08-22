@@ -2,14 +2,8 @@
 Order resources.
 
 """
-from marquez.enums.workspace import WorkspaceType
-from marshmallow import (
-    Schema,
-    ValidationError,
-    fields,
-    validates_schema,
-)
-from microcosm_flask.fields import EnumField, QueryStringList
+from marshmallow import Schema, fields
+from microcosm_flask.fields import EnumField
 from microcosm_flask.linking import Link, Links
 from microcosm_flask.namespaces import Namespace
 from microcosm_flask.operations import Operation
@@ -36,11 +30,11 @@ class NewOrderSchema(Schema):
         required=True,
     )
     purpose = EnumField(
-        required=True,
-        enum=Purpose,
+        Purpose,
     )
 
-class OrderSchema(NewProposalSchema):
+
+class OrderSchema(NewOrderSchema):
     id = fields.UUID(
         required=True,
     )

@@ -8,14 +8,10 @@ from microcosm_flask.conventions.crud import configure_crud
 from microcosm_flask.operations import Operation
 from microcosm_postgres.context import transactional
 
-from charmander.resources.order_event_resource import (
-    NewOrderEventSchema,
-    OrderEventSchema,
-    SearchOrderEventSchema,
-)
+from charmander.resources.order_event_resources import NewOrderEventSchema, OrderEventSchema, SearchOrderEventSchema
 
 
-@binding("v1_order_event_routes")
+@binding("order_event_routes")
 def configure_proposal_event_routes(graph):
     controller = graph.v1_order_event_controller
     mappings = {

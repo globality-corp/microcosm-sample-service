@@ -8,7 +8,7 @@ from microcosm_postgres.store import Store
 from charmander.models.topping_model import Topping
 
 
-@binding("topping")
+@binding("topping_store")
 class ToppingStore(Store):
 
     def __init__(self, graph):

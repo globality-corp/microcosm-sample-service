@@ -17,9 +17,11 @@ setup(
     zip_safe=False,
     install_requires=[
         "microcosm>=2.12.0",
-        "microcosm-flask[metrics,spooky]>=1.20.0",
+        "microcosm-eventsource>=2.0.0",
+        "microcosm-flask[metrics,spooky]>=2.0.1",
         "microcosm-logging>=1.3.0",
         "microcosm-postgres>=1.9.1",
+        "microcosm-pubsub>=2.0.0",
         "microcosm-secretsmanager>=1.1.0",
         "pyOpenSSL>=18.0.0",
     ],

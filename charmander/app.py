@@ -7,10 +7,10 @@ from microcosm.loaders import load_each, load_from_environ, load_from_json_file
 from microcosm.loaders.compose import load_config_and_secrets
 from microcosm_secretsmanager.loaders.conventions import load_from_secretsmanager
 
+import charmander.factories.order_event_factory  # noqa
 import charmander.postgres  # noqa
-import charmander.routes.pizza.controller  # noqa
-import charmander.routes.pizza.crud  # noqa
-import charmander.stores.pizza_store  # noqa
+import charmander.routes  # noqa
+import charmander.stores  # noqa
 from charmander.config import load_default_config
 
 
@@ -38,6 +38,9 @@ def create_app(debug=False, testing=False, model_only=False):
 
     graph.use(
         "pizza_store",
+        "order_store",
+        "order_event_store",
+        "topping_store",
         "logging",
         "postgres",
         "sessionmaker",
@@ -57,6 +60,9 @@ def create_app(debug=False, testing=False, model_only=False):
             "swagger_convention",
             # routes
             "pizza_routes",
+            "order_routes",
+            "order_event_routes",
+            "topping_routes",
         )
 
     return graph.lock()

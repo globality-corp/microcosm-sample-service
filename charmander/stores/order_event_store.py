@@ -4,10 +4,8 @@ Order events persistence.
 """
 from microcosm.api import binding
 from microcosm_eventsource.stores import EventStore
-from sqlalchemy.dialects.postgresql import insert
 
 from charmander.models.order_event_model import OrderEvent
-from charmander.models.order_model import Order
 
 
 @binding("order_event_store")
