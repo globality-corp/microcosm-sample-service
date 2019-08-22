@@ -7,10 +7,10 @@ from microcosm.loaders import load_each, load_from_environ, load_from_json_file
 from microcosm.loaders.compose import load_config_and_secrets
 from microcosm_secretsmanager.loaders.conventions import load_from_secretsmanager
 
+import charmander.factories.order_event_factory  # noqa
 import charmander.postgres  # noqa
 import charmander.routes  # noqa
 import charmander.stores  # noqa
-import charmander.factories.order_event_factory  # noqa
 from charmander.config import load_default_config
 
 

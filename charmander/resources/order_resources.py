@@ -2,10 +2,7 @@
 Order resources.
 
 """
-from marshmallow import (
-    Schema,
-    fields,
-)
+from marshmallow import Schema, fields
 from microcosm_flask.fields import EnumField
 from microcosm_flask.linking import Link, Links
 from microcosm_flask.namespaces import Namespace

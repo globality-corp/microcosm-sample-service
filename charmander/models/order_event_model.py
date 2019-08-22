@@ -6,15 +6,13 @@ from microcosm_eventsource.models import EventMeta
 from microcosm_postgres.models import UnixTimestampEntityMixin
 from microcosm_postgres.types import EnumType
 from six import add_metaclass
-from sqlalchemy import (
-    Column,
-)
+from sqlalchemy import Column
 from sqlalchemy_utils import UUIDType
 
 from charmander.enums import Purpose, Resolution
 from charmander.models.order_event_type import OrderEventType
 from charmander.models.order_model import Order
-from charmander.models.pizza_model import PizzaSize, CrustType
+from charmander.models.pizza_model import CrustType, PizzaSize
 from charmander.models.topping_model import ToppingType
 
 
