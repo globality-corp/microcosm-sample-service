@@ -38,7 +38,7 @@ class ToppingSchema(NewToppingSchema):
             topping_id=obj.id,
         )
         links["parent:pizza"] = Link.for_(
-            Operation.retireve,
+            Operation.Retrieve,
             Namespace(
                 subject=Pizza,
                 version="v1",
