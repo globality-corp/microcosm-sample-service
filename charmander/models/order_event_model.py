@@ -25,7 +25,7 @@ class OrderEvent(UnixTimestampEntityMixin):
     __tablename__ = "order_event"
     __eventtype__ = OrderEventType
     __container__ = Order
-    __unique_parent__ = False
+    __unique_parent__ = True
 
     customer_id = Column(UUIDType, nullable=False)
     pizza_size = Column(EnumType(PizzaSize), nullable=True)

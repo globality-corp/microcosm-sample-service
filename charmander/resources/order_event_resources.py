@@ -49,6 +49,9 @@ class NewOrderEventSchema(Schema):
     customerId = fields.UUID(
         attribute="customer_id",
     )
+    orderId = fields.UUID(
+        attribute="order_id",
+    )
     pizzaSize = EnumField(
         PizzaSize,
         attribute="pizza_size",
