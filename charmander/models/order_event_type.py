@@ -3,7 +3,18 @@ Event type to specify state machine for an Order
 
 """
 from microcosm_eventsource.event_types import EventType, event_info
-from microcosm_eventsource.transitioning import any_of, nothing
+from microcosm_eventsource.transitioning import (
+    all_of,
+    any_of,
+    nothing,
+    event,
+)
+from microcosm_eventsource.accumulation import (
+    addition,
+    compose,
+    difference,
+    union,
+)
 
 
 class OrderEventType(EventType):
@@ -28,8 +39,10 @@ class OrderEventType(EventType):
             "pizza_size",
             "crust_type",
         ],
+        accumulate=addition(
+            "PizzaCreated",
+        ),
     )
-
     PizzaToppingAdded = event_info(
         follows=any_of(
             "PizzaCreated",
@@ -38,23 +51,29 @@ class OrderEventType(EventType):
         requires=[
             "topping_type",
         ],
+        accumulate=addition(
+            "PizzaToppingAdded",
+        ),
     )
 
     PizzaCustomizationFinished = event_info(
-        follows=any_of(
+        follows=all_of(
             "PizzaCreated",
+            "PizzaToppingAdded",
+        ),
+        accumulate=difference(
             "PizzaToppingAdded",
         ),
     )
 
     OrderDeliveryDetailsAdded = event_info(
-        follows="PizzaCustomizationFinished",
+        follows=event("PizzaCustomizationFinished"),
     )
 
     OrderSubmitted = event_info(
-        follows="OrderDeliveryDetailsAdded",
+        follows=event("OrderDeliveryDetailsAdded"),
     )
 
-    OrderSatisfied = event_info(
-        follows="OrderSubmitted",
+    OrderFulfilled = event_info(
+        follows=event("OrderSubmitted"),
     )

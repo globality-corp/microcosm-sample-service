@@ -94,7 +94,7 @@ class OrderSubmitted(OrderEvent):
     }
 
 
-class OrderSatisfied(OrderEvent):
+class OrderFulfilled(OrderEvent):
     __mapper_args__ = {
-        "polymorphic_identity": OrderEventType.OrderSatisfied,
+        "polymorphic_identity": OrderEventType.OrderFulfilled,
     }
