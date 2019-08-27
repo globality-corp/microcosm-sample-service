@@ -38,8 +38,10 @@ class OrderEventType(EventType):
             "pizza_size",
             "crust_type",
         ],
-        accumulate=addition(
-            "PizzaCreated",
+        accumulate=compose(
+            addition("PizzaCreated"),
+            difference("PizzaCustomizationFinished"),
+            difference("OrderInitialized"),
         ),
     )
 
@@ -61,19 +63,33 @@ class OrderEventType(EventType):
             "PizzaCreated",
             "PizzaToppingAdded",
         ),
-        accumulate=difference(
-            "PizzaToppingAdded",
+        accumulate=compose(
+            addition("PizzaCustomizationFinished"),
+            difference("PizzaCreated"),
+            difference("PizzaToppingAdded"),
         ),
     )
 
     OrderDeliveryDetailsAdded = event_info(
         follows=event("PizzaCustomizationFinished"),
+        accumulate=compose(
+            addition("OrderDeliveryDetailsAdded"),
+            difference("PizzaCustomizationFinished"),
+        ),
     )
 
     OrderSubmitted = event_info(
         follows=event("OrderDeliveryDetailsAdded"),
+        accumulate=compose(
+            addition("OrderSubmitted"),
+            difference("OrderDeliveryDetailsAdded"),
+        ),
     )
 
     OrderFulfilled = event_info(
         follows=event("OrderSubmitted"),
+        accumulate=compose(
+            addition("OrderFulfilled"),
+            difference("OrderSubmitted"),
+        ),
     )
