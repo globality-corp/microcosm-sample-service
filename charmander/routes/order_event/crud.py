@@ -11,7 +11,7 @@ from microcosm_postgres.context import transactional
 from charmander.resources.order_event_resources import (
     NewOrderEventSchema,
     OrderEventSchema,
-    SearchOrderEventSchema
+    SearchOrderEventSchema,
 )
 
 

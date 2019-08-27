@@ -16,7 +16,6 @@ from microcosm_eventsource.accumulation import (
     union,
 )
 
-
 class OrderEventType(EventType):
     """
         Order event type. Models the user journey through specifying an order
@@ -43,6 +42,7 @@ class OrderEventType(EventType):
             "PizzaCreated",
         ),
     )
+
     PizzaToppingAdded = event_info(
         follows=any_of(
             "PizzaCreated",

@@ -1,5 +1,5 @@
 """
-Pizza CRUD routes tests.
+Order Event CRUD routes tests.
 
 Tests are sunny day cases under the assumption that framework conventions
 handle most error conditions.
