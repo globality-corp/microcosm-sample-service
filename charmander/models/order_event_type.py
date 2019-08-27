@@ -2,19 +2,15 @@
 Event type to specify state machine for an Order
 
 """
+from microcosm_eventsource.accumulation import addition, compose, difference
 from microcosm_eventsource.event_types import EventType, event_info
 from microcosm_eventsource.transitioning import (
     all_of,
     any_of,
-    nothing,
     event,
+    nothing,
 )
-from microcosm_eventsource.accumulation import (
-    addition,
-    compose,
-    difference,
-    union,
-)
+
 
 class OrderEventType(EventType):
     """

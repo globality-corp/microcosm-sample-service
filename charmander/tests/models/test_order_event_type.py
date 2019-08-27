@@ -2,8 +2,6 @@
 Test order event state transitions
 
 """
-from collections import namedtuple
-
 from hamcrest import assert_that, equal_to, is_
 
 from charmander.models.order_event_type import OrderEventType
@@ -73,14 +71,13 @@ class TestCompanyEventType():
             is_(equal_to(True)),
         )
 
-
     def test_fulfill_order(self):
         event_sequence = [
             (
                 OrderEventType.OrderInitialized,
                 {OrderEventType.OrderInitialized},
             ),
-            (    
+            (
                 OrderEventType.PizzaCreated,
                 {
                     OrderEventType.PizzaCreated,
