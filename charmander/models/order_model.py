@@ -19,7 +19,7 @@ class Order(UnixTimestampEntityMixin, Model):
     """
     __tablename__ = "order"
 
-    customer_id = Column(UUIDType, nullable=False, unique=True)
+    customer_id = Column(UUIDType, nullable=False, unique=False)
     purpose = Column(
             EnumType(Purpose),
             default=Purpose.NORMAL,
