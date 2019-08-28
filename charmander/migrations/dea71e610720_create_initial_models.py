@@ -6,28 +6,28 @@ Revises: e107ab9eb193
 Create Date: 2019-08-28 12:33:23.992504
 
 """
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 from microcosm_postgres.models import UTCDateTime
 from microcosm_postgres.types import EnumType, Serial
 from sqlalchemy import (
-    Column,
     CheckConstraint,
+    Column,
     FetchedValue,
     Float,
     ForeignKeyConstraint,
+    Integer,
     PrimaryKeyConstraint,
     UniqueConstraint,
-    Integer,
 )
 from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy_utils import UUIDType
 
 from charmander.enums import Purpose, Resolution
+from charmander.models.order_event_type import OrderEventType
 from charmander.models.pizza_model import CrustType, PizzaSize
 from charmander.models.topping_model import ToppingType
-from charmander.models.order_event_type import OrderEventType
+
 
 # revision identifiers, used by Alembic.
 revision = "dea71e610720"
