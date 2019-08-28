@@ -2,8 +2,14 @@
 Event type to specify state machine for an Order
 
 """
+from microcosm_eventsource.accumulation import addition, compose, difference
 from microcosm_eventsource.event_types import EventType, event_info
-from microcosm_eventsource.transitioning import any_of, nothing
+from microcosm_eventsource.transitioning import (
+    all_of,
+    any_of,
+    event,
+    nothing,
+)
 
 
 class OrderEventType(EventType):
@@ -28,6 +34,11 @@ class OrderEventType(EventType):
             "pizza_size",
             "crust_type",
         ],
+        accumulate=compose(
+            addition("PizzaCreated"),
+            difference("PizzaCustomizationFinished"),
+            difference("OrderInitialized"),
+        ),
     )
 
     PizzaToppingAdded = event_info(
@@ -38,23 +49,43 @@ class OrderEventType(EventType):
         requires=[
             "topping_type",
         ],
-    )
-
-    PizzaCustomizationFinished = event_info(
-        follows=any_of(
-            "PizzaCreated",
+        accumulate=addition(
             "PizzaToppingAdded",
         ),
     )
 
+    PizzaCustomizationFinished = event_info(
+        follows=all_of(
+            "PizzaCreated",
+            "PizzaToppingAdded",
+        ),
+        accumulate=compose(
+            addition("PizzaCustomizationFinished"),
+            difference("PizzaCreated"),
+            difference("PizzaToppingAdded"),
+        ),
+    )
+
     OrderDeliveryDetailsAdded = event_info(
-        follows="PizzaCustomizationFinished",
+        follows=event("PizzaCustomizationFinished"),
+        accumulate=compose(
+            addition("OrderDeliveryDetailsAdded"),
+            difference("PizzaCustomizationFinished"),
+        ),
     )
 
     OrderSubmitted = event_info(
-        follows="OrderDeliveryDetailsAdded",
+        follows=event("OrderDeliveryDetailsAdded"),
+        accumulate=compose(
+            addition("OrderSubmitted"),
+            difference("OrderDeliveryDetailsAdded"),
+        ),
     )
 
-    OrderSatisfied = event_info(
-        follows="OrderSubmitted",
+    OrderFulfilled = event_info(
+        follows=event("OrderSubmitted"),
+        accumulate=compose(
+            addition("OrderFulfilled"),
+            difference("OrderSubmitted"),
+        ),
     )
