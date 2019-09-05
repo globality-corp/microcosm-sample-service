@@ -15,7 +15,7 @@ from charmander.models.topping_model import Topping, ToppingType
 
 class NewToppingSchema(Schema):
     pizzaId = fields.UUID(required=True, attribute="pizza_id")
-    toppingType = EnumField(ToppingType, attribute="topping_type")
+    toppingType = EnumField(ToppingType, required=True, attribute="topping_type")
 
 
 class ToppingSchema(NewToppingSchema):

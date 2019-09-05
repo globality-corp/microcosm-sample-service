@@ -14,8 +14,15 @@ from charmander.models.pizza_model import CrustType, Pizza, PizzaSize
 
 class NewPizzaSchema(Schema):
     customerId = fields.UUID(required=True, attribute="customer_id")
-    size = EnumField(PizzaSize)
-    crustType = EnumField(CrustType, attribute="crust_type")
+    size = EnumField(
+        PizzaSize,
+        required=True,
+    )
+    crustType = EnumField(
+        CrustType,
+        attribute="crust_type",
+        required=True,
+    )
 
 
 class PizzaSchema(NewPizzaSchema):
