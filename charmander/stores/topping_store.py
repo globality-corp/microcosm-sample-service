@@ -17,6 +17,7 @@ class ToppingStore(Store):
             Topping,
             auto_filter_fields=(
                 Topping.pizza_id,
+                Topping.order_id,
                 Topping.topping_type,
             ),
         )

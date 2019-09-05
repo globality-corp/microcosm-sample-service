@@ -36,3 +36,8 @@ class Topping(EntityMixin, Model):
         nullable=False,
     )
     topping_type = Column(EnumType(ToppingType), nullable=False)
+    order_id = Column(
+        UUIDType,
+        ForeignKey("order.id"),
+        nullable=False,
+    )

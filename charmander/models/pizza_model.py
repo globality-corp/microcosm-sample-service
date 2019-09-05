@@ -3,7 +3,7 @@ from enum import Enum, unique
 
 from microcosm_postgres.models import EntityMixin, Model
 from microcosm_postgres.types import EnumType
-from sqlalchemy import Column
+from sqlalchemy import Column, ForeignKey
 from sqlalchemy_utils import UUIDType
 
 
@@ -54,3 +54,8 @@ class Pizza(EntityMixin, Model):
     customer_id = Column(UUIDType, nullable=False)
     size = Column(EnumType(PizzaSize), nullable=False)
     crust_type = Column(EnumType(CrustType), nullable=False)
+    order_id = Column(
+        UUIDType,
+        ForeignKey("order.id"),
+        nullable=False,
+    )
