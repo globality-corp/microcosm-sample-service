@@ -31,6 +31,7 @@ class ToppingController(CRUDStoreAdapter):
             sns_producer=self.sns_producer,
             order_id=topping.order_id,
             event_type=OrderEventType.PizzaToppingAdded,
+            topping_type=topping.topping_type,
         )
 
         return topping

@@ -19,12 +19,13 @@ from microcosm_postgres.identifiers import new_object_id
 from microcosm_postgres.operations import recreate_all
 
 from charmander.app import create_app
+from charmander.models.order_event_type import OrderEventType
 from charmander.models.order_model import Order
 from charmander.models.pizza_model import CrustType, Pizza, PizzaSize
 from charmander.models.topping_model import Topping, ToppingType
 
 
-class TestPizzaRoutes:
+class TestToppingRoutes:
 
     def setup(self):
         self.graph = create_app(testing=True)
@@ -32,6 +33,7 @@ class TestPizzaRoutes:
         self.uri = "/api/v1/topping"
         recreate_all(self.graph)
 
+        self.factory = self.graph.order_event_factory
         self.customer_id = new_object_id()
 
         self.order = Order(
@@ -43,15 +45,37 @@ class TestPizzaRoutes:
             customer_id=self.customer_id,
             crust_type=CrustType.CHEESE_STUFFED,
             size=PizzaSize.LARGE,
+            order_id=self.order.id,
         )
         self.topping = Topping(
             id=new_object_id(),
             pizza_id=self.pizza.id,
             topping_type=ToppingType.PEPPERONI,
+            order_id=self.order.id,
         )
 
         with SessionContext(self.graph), transaction():
             self.order.create()
+            self.pizza.create()
+
+        with self.graph.flask.test_request_context():
+            with SessionContext(self.graph), transaction():
+                self.initial_order_event = self.factory.create(
+                    ns=None,
+                    sns_producer=self.graph.sns_producer,
+                    event_type=OrderEventType.OrderInitialized,
+                    order_id=self.order.id,
+                    customer_id=self.customer_id,
+                )
+                self.pizza_created_event = self.factory.create(
+                    ns=None,
+                    sns_producer=self.graph.sns_producer,
+                    event_type=OrderEventType.PizzaCreated,
+                    order_id=self.order.id,
+                    customer_id=self.customer_id,
+                    crust_type=self.pizza.crust_type,
+                    pizza_size=self.pizza.size,
+                )
 
     def teardown(self):
         self.graph.postgres.dispose()
@@ -93,9 +117,6 @@ class TestPizzaRoutes:
         )
 
     def test_create(self):
-        with SessionContext(self.graph), transaction():
-            self.pizza.create()
-
         with patch.object(self.graph.topping_store, "new_object_id") as mocked:
             mocked.return_value = self.topping.id
             response = self.client.post(
@@ -103,6 +124,7 @@ class TestPizzaRoutes:
                 json=dict(
                     pizzaId=self.topping.pizza_id,
                     toppingType=self.topping.topping_type.name,
+                    orderId=str(self.order.id),
                 ),
             )
 
@@ -113,6 +135,7 @@ class TestPizzaRoutes:
                 id=str(self.topping.id),
                 toppingType=str(self.topping.topping_type),
                 pizzaId=str(self.topping.pizza_id),
+                orderId=str(self.order.id),
             ),
         )
 

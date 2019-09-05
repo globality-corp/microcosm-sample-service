@@ -19,8 +19,8 @@ from microcosm_postgres.identifiers import new_object_id
 from microcosm_postgres.operations import recreate_all
 
 from charmander.app import create_app
-from charmander.models.order_model import Order
 from charmander.models.order_event_type import OrderEventType
+from charmander.models.order_model import Order
 from charmander.models.pizza_model import CrustType, Pizza, PizzaSize
 
 
