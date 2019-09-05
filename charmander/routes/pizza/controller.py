@@ -31,6 +31,9 @@ class PizzaController(CRUDStoreAdapter):
             sns_producer=self.sns_producer,
             order_id=pizza.order_id,
             event_type=OrderEventType.PizzaCreated,
+            pizza_size=pizza.size,
+            crust_type=pizza.crust_type,
+            customer_id=pizza.customer_id,
         )
 
         return pizza

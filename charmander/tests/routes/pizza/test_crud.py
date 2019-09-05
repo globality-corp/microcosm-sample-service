@@ -19,6 +19,8 @@ from microcosm_postgres.identifiers import new_object_id
 from microcosm_postgres.operations import recreate_all
 
 from charmander.app import create_app
+from charmander.models.order_model import Order
+from charmander.models.order_event_type import OrderEventType
 from charmander.models.pizza_model import CrustType, Pizza, PizzaSize
 
 
@@ -30,12 +32,34 @@ class TestPizzaRoutes:
         self.uri = "/api/v1/pizza"
         recreate_all(self.graph)
 
+        self.factory = self.graph.order_event_factory
+        self.customer_id = new_object_id()
+
+        self.order = Order(
+            id=new_object_id(),
+            customer_id=self.customer_id,
+        )
+
         self.pizza = Pizza(
             id=new_object_id(),
             customer_id=new_object_id(),
             crust_type=CrustType.CHEESE_STUFFED,
             size=PizzaSize.LARGE,
+            order_id=self.order.id,
         )
+
+        with SessionContext(self.graph), transaction():
+            self.order.create()
+
+        with self.graph.flask.test_request_context():
+            with SessionContext(self.graph), transaction():
+                self.initial_order_event = self.factory.create(
+                    ns=None,
+                    sns_producer=self.graph.sns_producer,
+                    event_type=OrderEventType.OrderInitialized,
+                    order_id=self.order.id,
+                    customer_id=self.customer_id,
+                )
 
     def teardown(self):
         self.graph.postgres.dispose()
@@ -84,6 +108,7 @@ class TestPizzaRoutes:
                     customerId=self.pizza.customer_id,
                     crustType=self.pizza.crust_type.name,
                     size=self.pizza.size.name,
+                    orderId=str(self.order.id),
                 ),
             )
 
@@ -95,6 +120,7 @@ class TestPizzaRoutes:
                 customerId=str(self.pizza.customer_id),
                 crustType=self.pizza.crust_type.name,
                 size=self.pizza.size.name,
+                orderId=str(self.order.id),
             ),
         )
 
@@ -104,6 +130,7 @@ class TestPizzaRoutes:
         response = self.client.put(
             replace_uri,
             json=dict(
+                orderId=self.order.id,
                 crustType=CrustType.REGULAR.name,
                 customerId=str(self.pizza.customer_id),
                 size=str(self.pizza.size),
@@ -117,6 +144,7 @@ class TestPizzaRoutes:
                 id=str(self.pizza.id),
                 customerId=str(self.pizza.customer_id),
                 crustType=CrustType.REGULAR.name,
+                orderId=str(self.order.id),
                 size=str(self.pizza.size),
             ),
         )

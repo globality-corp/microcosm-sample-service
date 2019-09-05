@@ -19,6 +19,7 @@ from microcosm_postgres.identifiers import new_object_id
 from microcosm_postgres.operations import recreate_all
 
 from charmander.app import create_app
+from charmander.models.order_model import Order
 from charmander.models.pizza_model import CrustType, Pizza, PizzaSize
 from charmander.models.topping_model import Topping, ToppingType
 
@@ -31,9 +32,15 @@ class TestPizzaRoutes:
         self.uri = "/api/v1/topping"
         recreate_all(self.graph)
 
+        self.customer_id = new_object_id()
+
+        self.order = Order(
+            id=new_object_id(),
+            customer_id=self.customer_id,
+        )
         self.pizza = Pizza(
             id=new_object_id(),
-            customer_id=new_object_id(),
+            customer_id=self.customer_id,
             crust_type=CrustType.CHEESE_STUFFED,
             size=PizzaSize.LARGE,
         )
@@ -42,6 +49,9 @@ class TestPizzaRoutes:
             pizza_id=self.pizza.id,
             topping_type=ToppingType.PEPPERONI,
         )
+
+        with SessionContext(self.graph), transaction():
+            self.order.create()
 
     def teardown(self):
         self.graph.postgres.dispose()
