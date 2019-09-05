@@ -5,7 +5,6 @@ OrderEvent model.
 from microcosm_eventsource.models import EventMeta
 from microcosm_postgres.models import UnixTimestampEntityMixin
 from microcosm_postgres.types import EnumType
-from six import add_metaclass
 from sqlalchemy import Column
 from sqlalchemy_utils import UUIDType
 
@@ -16,8 +15,7 @@ from charmander.models.pizza_model import CrustType, PizzaSize
 from charmander.models.topping_model import ToppingType
 
 
-@add_metaclass(EventMeta)
-class OrderEvent(UnixTimestampEntityMixin):
+class OrderEvent(UnixTimestampEntityMixin, metaclass=EventMeta):
     """
     Order events, handles pizza and topping creation as well as order status.
 
