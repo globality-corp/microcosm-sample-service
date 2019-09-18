@@ -20,11 +20,13 @@ class OrderEventType(EventType):
 
     """
     # NB: Our state machines always start with an initial event
+    # order created
     OrderInitialized = event_info(
         follows=nothing(),
         requires=["customer_id"],
     )
 
+    # pizza created
     PizzaCreated = event_info(
         follows=any_of(
             "OrderInitialized",
@@ -41,6 +43,7 @@ class OrderEventType(EventType):
         ),
     )
 
+    # topping created
     PizzaToppingAdded = event_info(
         follows=any_of(
             "PizzaCreated",
@@ -54,6 +57,7 @@ class OrderEventType(EventType):
         ),
     )
 
+    # event initiated by user
     PizzaCustomizationFinished = event_info(
         follows=all_of(
             "PizzaCreated",
@@ -66,6 +70,7 @@ class OrderEventType(EventType):
         ),
     )
 
+    # by user (or an external event from some other service)
     OrderDeliveryDetailsAdded = event_info(
         follows=event("PizzaCustomizationFinished"),
         accumulate=compose(
@@ -74,6 +79,7 @@ class OrderEventType(EventType):
         ),
     )
 
+    # automatic after submitting details FOR NOW XXX
     OrderSubmitted = event_info(
         follows=event("OrderDeliveryDetailsAdded"),
         accumulate=compose(
@@ -82,6 +88,7 @@ class OrderEventType(EventType):
         ),
     )
 
+    # from some other service
     OrderFulfilled = event_info(
         follows=event("OrderSubmitted"),
         accumulate=compose(

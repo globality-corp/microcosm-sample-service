@@ -17,6 +17,7 @@ class PizzaStore(Store):
             Pizza,
             auto_filter_fields=(
                 Pizza.customer_id,
+                Pizza.order_id,
                 Pizza.crust_type,
                 Pizza.size,
             ),
