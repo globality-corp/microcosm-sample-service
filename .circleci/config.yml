@@ -10,31 +10,11 @@
 #  See: http://github.com/globality-corp/globality-build
 #
 #
-
 defaults: &defaults
   working_directory: ~/repo
   docker:
-    - image: ${AWS_ECR_DOMAIN}/globality-build:2019.31.2
-      aws_auth:
-        aws_access_key_id: ${AWS_ACCESS_KEY_ID}
-        aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
-      environment:
-        EXTRA_INDEX_URL: "InjectedDuringRuntime"
-        AWS_ECR_DOMAIN: "InjectedDuringRuntime"
-        JFROG_AUTH: "InjectedDuringRuntime"
-
-deploy_defaults: &deploy_defaults
-  working_directory: ~/repo
-  docker:
-    - image: ${AWS_ECR_DOMAIN}/globality-build:2019.31.2
-      aws_auth:
-        aws_access_key_id: ${AWS_ACCESS_KEY_ID}
-        aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
-      environment:
-        EXTRA_INDEX_URL: "InjectedDuringRuntime"
-        AWS_ECR_DOMAIN: "InjectedDuringRuntime"
-        JFROG_AUTH: "InjectedDuringRuntime"
-
+  - image: circleci/python:3.7.0
+  
 whitelist: &whitelist
   paths:
     .
@@ -52,44 +32,27 @@ jobs:
           root: ~/repo
           <<: *whitelist
 
-  build_base_docker:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-
-      - setup_remote_docker
-
-      - run:
-          name: Build Base Docker
-          # install dependencies for loading ecs task definitions
-          command: |
-            eval $(aws ecr get-login --no-include-email)
-            globality-build build-gen local
-            globality-build docker --repo python-library
-
   test:
-    <<: *defaults
+    working_directory: ~/repo
+    docker:
+      - image: circleci/python:3.7.0
+      - image: circleci/postgres:9.6.5-alpine-ram
+        environment:
+          POSTGRES_USER: charmander
+          POSTGRES_DB: charmander_test_db
 
     steps:
       - attach_workspace:
           at: ~/repo
 
-      - setup_remote_docker
-      - run:
-          name: pull and run database - postgres
-          command: |
-            docker pull postgres
-            docker run -d --name charmander_db -e POSTGRES_DB=charmander_test_db -e POSTGRES_USER=charmander postgres
       - run:
           name: Test code
           command: |
-            docker create -v /src/charmander/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/charmander/tests service_tests:/src/charmander/
-            eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
-            docker run -it  --link charmander_db:postgres -e CHARMANDER__POSTGRES__HOST=postgres --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} test
+            sudo apt-get update
+            sudo apt-get install postgresql-client-9.6
+            sudo pip install -e .
+            sudo pip install nose PyHamcrest coverage
+            nosetests ./
   lint:
     <<: *defaults
 
@@ -102,38 +65,9 @@ jobs:
       - run:
           name: Run Lint
           command: |
-            docker create -v /src/charmander/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/charmander/tests service_tests:/src/charmander/
-            eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
-            docker run -it --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} lint
-
-  typehinting:
-    <<: *defaults
-
-    steps:
-      - attach_workspace:
-          at: ~/repo
-
-      - setup_remote_docker
-
-      - run:
-          name: Run Typehinting
-          command: |
-            docker create -v /src/charmander/tests/ --name service_tests alpine:3.4 /bin/true
-            docker cp $(pwd)/charmander/tests service_tests:/src/charmander/
-            eval $(aws ecr get-login --no-include-email)
-            docker pull ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1}
-            docker run -it --volumes-from service_tests ${AWS_ECR_DOMAIN}/python-library:${CIRCLE_SHA1} typehinting
-  deploy_pypi:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/repo
-      - run:
-          name: Deploy
-          command: |
-            echo "Not publishing package!"
+            sudo pip install -e .
+            sudo pip install flake8 flake8-print flake8-logging-format flake8-isort
+            flake8
 
 workflows:
   version: 2
@@ -145,43 +79,17 @@ workflows:
             # run for all branches and tags
             tags:
               only: /.*/
-      - build_base_docker:
+      - lint:
           requires:
             - checkout
           filters:
             # run for all branches and tags
             tags:
               only: /.*/
-      - lint:
-          requires:
-            - build_base_docker
-          filters:
-            # run for all branches and tags
-            tags:
-              only: /.*/
       - test:
           requires:
-            - build_base_docker
+            - checkout
           filters:
             # run for all branches and tags
             tags:
               only: /.*/
-      - typehinting:
-          requires:
-            - build_base_docker
-          filters:
-            # run for all branches and tags
-            tags:
-              only: /.*/
-      - deploy_pypi:
-          requires:
-            - test
-            - lint
-            - typehinting
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only: /^[0-9]+(\.[0-9]+)*/
-
-
