@@ -21,7 +21,7 @@ setup(
         "microcosm-flask[metrics,spooky]>=2.0.1",
         "microcosm-logging>=1.3.0",
         "microcosm-postgres>=1.9.1",
-        "microcosm-pubsub>=2.0.0",
+        "microcosm-pubsub>=2.4.1",
         "microcosm-secretsmanager>=1.1.0",
         "pyOpenSSL>=18.0.0",
     ],
