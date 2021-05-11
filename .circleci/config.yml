@@ -50,6 +50,8 @@ jobs:
           command: |
             sudo apt-get update
             sudo apt-get install postgresql-client-9.6
+            sudo pip install --upgrade pip
+            sudo pip install wheel
             sudo pip install -e .
             sudo pip install nose PyHamcrest coverage
             nosetests ./
@@ -65,6 +67,8 @@ jobs:
       - run:
           name: Run Lint
           command: |
+            sudo pip install --upgrade pip
+            sudo pip install wheel
             sudo pip install -e .
             sudo pip install flake8 flake8-print flake8-logging-format flake8-isort
             flake8
